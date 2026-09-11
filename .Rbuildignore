@@ -1,0 +1,13 @@
+^renv$
+^renv\.lock$
+^archive$
+^\.Rproj\.user$
+^LICENSE\.md$
+^data/.gitgnore$
+^Makefile$
+^Jenkinsfile$
+^\.pre-commit-config\.yaml$
+^README\.Rmd$
+^README\.md$
+^.*\.Rproj$
+^.gitea$

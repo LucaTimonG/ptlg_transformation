@@ -1,0 +1,20 @@
+Package: ptlgagg
+Title: Aggregator für PTLG-Verfahrensdaten
+Version: 0.1.0
+Authors@R: person("Luca", "Greif", email = "luca.greif@zh.ch", role = c("aut", "cre"))
+Description: Aggregiert und transformiert Daten der PTLG-Verfahren 
+    (Personentransport mit Taxis und Limousinen) in verschiedene Tabellenstrukturen.
+License: GPL-3
+Encoding: UTF-8
+LazyData: true
+Imports: 
+    dplyr,
+    tidyr,
+    purrr,
+    stringr,
+    readr,
+    here
+Suggests: 
+    testthat (>= 3.0.0)
+Config/testthat/Edition: 3
+RoxygenNote: 7.3.3

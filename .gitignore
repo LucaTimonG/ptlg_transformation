@@ -1,0 +1,14 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+inst/doc
+sqlnet.log
+*.Rproj
+data/*.csv
+
+echo ".RData" >> .gitignore
+echo ".Rhistory" >> .gitignore
+echo ".Rprofile" >> .gitignore
+echo ".Rproj.user/" >> .gitignore
+echo "output/" >> .gitignore
