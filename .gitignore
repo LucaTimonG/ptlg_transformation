@@ -12,3 +12,4 @@ echo ".Rhistory" >> .gitignore
 echo ".Rprofile" >> .gitignore
 echo ".Rproj.user/" >> .gitignore
 echo "output/" >> .gitignore
+echo "tests/" >> .gitignore
