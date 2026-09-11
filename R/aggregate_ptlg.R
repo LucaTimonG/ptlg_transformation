@@ -29,13 +29,8 @@ transform_data <- function(
 #' @return Eine Liste mit den eingelesenen Dataframes.
 #' @keywords internal
 .load_ptlg_data_raw <- function(path) {
-  if (!exists(".ptlg_config")) {
-    stop(
-      "Die interne Konfigurationsliste '.ptlg_config' wurde im Package nicht gefunden."
-    )
-  }
 
-  required_files <- .ptlg_config$required_tables
+  required_files <- .get_ptlg_config()$required_tables
   if (is.null(required_files)) {
     stop(
       "Die interne Konfiguration '.ptlg_config' enthält keine Liste 'required_tables'."
@@ -63,7 +58,7 @@ transform_data <- function(
     )
   }
 
-  missing <- setdiff(.ptlg_config$required_tables, names(data_list))
+  missing <- setdiff(.get_ptlg_config()$required_tables, names(data_list))
   if (length(missing) > 0) {
     stop(paste(
       "Fehler: Folgende Datensätze fehlen:",
@@ -87,26 +82,28 @@ transform_data <- function(
 #'
 #' @keywords internal
 .harmonize_ptlg_data <- function(data) {
+  config <- .get_ptlg_config() # Einmal zu Beginn aufrufen für bessere Lesbarkeit
+
   list(
     gesuche = data$ptlg_gesuche_nach_monat %>%
       dplyr::mutate(jahr = as.character(jahr)),
     bestand = data$ptlg_aktiver_bestand_monatlich %>%
       dplyr::mutate(jahr = as.character(jahr)) %>%
-      dplyr::rename(anzahl = all_of(.ptlg_config$column_mapping$bestand)),
+      dplyr::rename(anzahl = all_of(config$column_mapping$bestand)),
     alters = data$ptlg_altersverteilung_fahrer %>%
       dplyr::mutate(jahr = as.character(jahr)) %>%
       dplyr::rename(
-        geburtskohorte = all_of(.ptlg_config$column_mapping$alters)
+        geburtskohorte = all_of(config$column_mapping$alters)
       ),
     kanton = data$ptlg_fahrzeuge_nach_kanton %>%
       dplyr::mutate(jahr = as.character(jahr)) %>%
-      dplyr::rename(geo_name = all_of(.ptlg_config$column_mapping$kanton)),
+      dplyr::rename(geo_name = all_of(config$column_mapping$kanton)),
     gemeinde = data$ptlg_kommunale_bewilligungen_stichtag %>%
       dplyr::mutate(
         jahr = stringr::str_extract(stichtag, "\\d{4}"),
         jahr = as.character(jahr)
       ) %>%
-      dplyr::rename(geo_name = all_of(.ptlg_config$column_mapping$gemeinde))
+      dplyr::rename(geo_name = all_of(config$column_mapping$gemeinde))
   )
 }
 
