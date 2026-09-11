@@ -1,4 +1,4 @@
-Package: ptlgagg
+Package: ptlgtransformation
 Title: Aggregator für PTLG-Verfahrensdaten
 Version: 0.1.0
 Authors@R: person("Luca", "Greif", email = "luca.greif@zh.ch", role = c("aut", "cre"))
