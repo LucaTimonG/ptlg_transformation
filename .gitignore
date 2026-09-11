@@ -7,9 +7,9 @@ sqlnet.log
 *.Rproj
 data/*.csv
 
-echo ".RData" >> .gitignore
-echo ".Rhistory" >> .gitignore
-echo ".Rprofile" >> .gitignore
-echo ".Rproj.user/" >> .gitignore
-echo "output/" >> .gitignore
-echo "tests/" >> .gitignore
+.RData
+.Rhistory
+.Rprofile
+.Rproj.user/
+output/
+tests/
