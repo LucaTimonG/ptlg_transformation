@@ -1,79 +1,94 @@
-
-<!-- README.md is generated from README.Rmd. Please edit that file -->
-
-# myrpackage
+# 🚕 ptlg_transformation
 
 <!-- badges: start -->
-
-[![Lifecycle:
-experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
+[![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
+[![R-Package](https://img.shields.io/badge/R-Package-blue.svg)](https://cran.r-project.org/)
 <!-- badges: end -->
 
-The goal of this R package is to …
+**`ptlg_transformation`** ist ein spezialisiertes R-Paket zur automatisierten Konsolidierung und Transformation von Taxidaten (PTLG). Es überführt heterogene Rohdatentabellen in harmonisierte, strukturierte Formate, die ideal für moderne Analysen, BI-Tools (z. B. Power BI, Tableau) oder die Publikation als Open Data geeignet sind.
 
-## Wichtige Schritte zum Start
+---
 
-1.  Klicke im Template unter
-    <https://statdm.ji.ktzh.ch:8788/stat-packages/r_package_template>
-    auf „Dieses Template verwenden“.
+##  Projektziel & Vision
 
-2.  Wähle als Besitzer „stat-packages“ und gib einen Repository-Namen
-    ein (nur Buchstaben erlaubt). Wähle im Bereich „Template-Elemente“
-    die Option „Git Inhalt (Standardbranch)“ und klicke anschliessend
-    auf „Repository erstellen“.
+Das Ziel dieses Projekts ist es, die Analyse von Taxidaten durch eine standardisierte Datenpipeline zu professionalisieren. Die Tabellen sollen ggf. reduziert werde. Mit diesem Tool ist dies möglich.
 
-3.  Klone das neu erstellte Paket-Repository (siehe Anleitung:
-    <https://confluence.ji.zh.ch/spaces/R/pages/844600689/Git+und+Version+Control>).
+##  Installation
 
-4.  Öffne im geklonten Repository die Datei `DESCRIPTION` und passe in
-    der ersten Zeile den Paketnamen an. Speichere die Datei
-    anschliessend.
+Das Paket ist in einem öffentlichen GitHub-Repository verfügbar und kann über `remotes` installiert werden.
 
-5.  Öffne im Ordner `tests` die Datei `testthat.R`. Ersetze in Zeile 10
-    und Zeile 12 den alten Namen: myrpackage, durch den neuen Paketnamen
-    und speichere die Datei.
-
-- Beispiel für Schritt 4 und 5:
-  <https://statdm.ji.ktzh.ch:8788/stat-packages/statRenv/commit/2348146121b1e3614bf7d59c735ed578819c19f6>
-
-6.  Nach erfolgreicher Anpassung kann im Environment Panel unter „Build“
-    auf „Check“ geklickt werden. Die Prüfung sollte nun ohne Fehler
-    durchlaufen.
-
-## Installation
-
-You can install this package like so:
-
-``` r
-# ADJUST THIS! HOW CAN PEOPLE INSTALL YOUR PACKAGE?
-install.packages("myrpackage")
+### 1. Voraussetzungen
+Falls noch nicht installiert, installieren Sie zuerst das Paket `remotes`:
+```r
+install.packages("remotes")
 ```
 
-## Example
-
-This is a basic example which shows you how to solve a common problem:
-
-``` r
-library(myrpackage)
-## basic example code
+### 2. Installation vom GitHub-Repository
+```r
+remotes::install_github("LucaTimonG/ptlg_transformation")
 ```
 
-What is special about using `README.Rmd` instead of just `README.md`?
-You can include R chunks like so:
+---
 
-``` r
-summary(cars)
-#>      speed           dist       
-#>  Min.   : 4.0   Min.   :  2.00  
-#>  1st Qu.:12.0   1st Qu.: 26.00  
-#>  Median :15.0   Median : 36.00  
-#>  Mean   :15.4   Mean   : 42.98  
-#>  3rd Qu.:19.0   3rd Qu.: 56.00  
-#>  Max.   :25.0   Max.   :120.00
+##  Verwendung
+
+Die zentrale Funktion des Pakets ist `transform_data()`. Sie steuert den gesamten Prozess vom Einlesen der Rohdaten bis zum Export der CSV-Dateien.
+
+### Basis-Beispiel
+```r
+library(ptlg_transformation)
+
+# Transformation mit den Standardeinstellungen (Variante 3)
+transform_data(
+  path_input = "pfad/zu/den/rohdaten", 
+  path_output = "pfad/zum/export"
+)
 ```
 
-You’ll still need to render `README.Rmd` regularly, to keep `README.md`
-up-to-date. `devtools::build_readme()` is handy for this.
+### Parameter-Details
+| Parameter | Beschreibung | Standard |
+| :--- | :--- | :--- |
+| `path_input` | Pfad zum Ordner mit den ursprünglichen PTLG-CSV-Tabellen. | *Erforderlich* |
+| `target_tables` | Anzahl der gewünschten Output-Tabellen (1, 2, 3 oder 4). | `3` |
+| `path_output` | Pfad für den Export der CSV-Dateien. | `path_input` |
 
-You can also embed plots, for example:
-<img src="man/figures/README-pressure-1.png" alt="" width="100%" />
+---
+
+##  Die 4 Transformations-Varianten
+
+Je nach gewähltem `target_tables`-Wert wird eine andere Aggregationslogik angewendet, um unterschiedliche Analysebedürfnisse zu bedienen:
+
+*   **🔹 Variante 1: Master-Tabelle (`target_tables = 1`)**
+    Erstellt eine einzige, stark normierte Master-Tabelle im Long-Format. Alle Dimensionen werden untereinander geschrieben. Ideal für komplexe Datenbank-Importe.
+*   **🔹 Variante 2: Metriken & Geografie (`target_tables = 2`)**
+    Teilt die Daten in zwei logische Cluster:
+    *   *Zeit-Metriken:* Fusion von Gesuchen, Bestand und Altersverteilung.
+    *   *Geografische Verteilung:* Fusion von Kantons- und Gemeindedaten.
+*   **🔹 Variante 3: Thematische Cluster (`target_tables = 3`) — Empfohlen**
+    Die optimierte Aufteilung für Storytelling und detaillierte Analysen:
+    *   *Marktdynamik (`time_metrics`):* Gesuche und aktiver Bestand als Zeitreihen.
+    *   *Marktprofil (`driver_profiles`):* Demografische Daten der Fahrerschaft.
+    *   *Räumliche Struktur (`geo_distribution`):* Verteilung nach Kanton und Gemeinde.
+*   **🔹 Variante 4: Einzel-Tabellen (`target_tables = 4`)**
+    Exportiert vier separate Tabellen (Gesuche, Bestand, Demografie, Geografie). Hier werden lediglich die geografischen Ebenen (Kanton/Gemeinde) konsolidiert.
+
+---
+
+##  Technische Dokumentation
+
+### Daten-Mapping
+Das Paket verarbeitet die folgenden Rohdatenquellen und harmonisiert sie:
+
+| Rohdatei | Fokus | Transformation |
+| :--- | :--- | :--- |
+| `gesuche_nach_monat` | Prozess-Dynamik | Zeitreihen-Harmonisierung |
+| `aktiver_bestand_monatlich` | Marktvolumen | Spalten-Mapping auf `anzahl` |
+| `altersverteilung_fahrer` | Demografie | Mapping auf `geburtskohorte` |
+| `fahrzeuge_nach_kanton` | Grobräumig | Mapping auf `geo_name` $\rightarrow$ Ebene "Kanton" |
+| `kommunale_bewilligungen` | Detailräumig | Mapping auf `geo_name` $\rightarrow$ Ebene "Gemeinde" |
+
+### Workflow-Pipeline
+1.  ** Load:** Automatisches Einlesen der definierten Pflichttabellen.
+2.  ** Harmonize:** Vereinheitlichung der Spaltennamen und Korrektur der Datentypen (z. B. Jahre als `character`, um BI-Tool-Fehler zu vermeiden).
+3.  ** Aggregate:** Anwendung der gewählten Variante (1–4) zur strukturellen Umformung.
+4.  ** Export:** Bereitstellung der resultierenden Tabellen als saubere CSV-Dateien.
